@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "565339302234",
+    "project_id": "contact-and-note",
+    "storage_bucket": "contact-and-note.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:565339302234:android:14cd76d664e598be5c6b63",
+        "android_client_info": {
+          "package_name": "com.example.contack_and_note"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "565339302234-1ehtvm0t91jc01a270q26he85jrvf2ae.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBMfQSl4pM4NODRrc4EfsQVf9SePs92X1U"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "565339302234-1ehtvm0t91jc01a270q26he85jrvf2ae.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

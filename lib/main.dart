@@ -1,6 +1,17 @@
+import 'package:contack_and_note/app/modules/home/home_page.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
-void main() {
+import 'app/core/utils/is_authenticated_midleware.dart';
+import 'app/core/utils/is_not_authenticated_midleware.dart';
+import 'app/data/services/global_binding_service.dart';
+import 'app/modules/login/login_page.dart';
+import 'app/modules/register/register_page.dart';
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(const MyApp());
 }
 
@@ -10,21 +21,38 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
+    return GetMaterialApp(
+      title: 'Cobtacts & Notes',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      initialBinding: GlobalBinding(),
+      unknownRoute: GetPage(name: '/notfound', page: () => Home()),
+      initialRoute: '/',
+      getPages: [
+        GetPage(
+          name: '/',
+          page: () => Home(),
+          middlewares: [
+            IsNotAuthenticatedMidleware()
+          ]
+        ),
+        GetPage(
+          name: '/login',
+          page: () => Login(),
+          middlewares: [
+            IsAuthenticatedMidleware()
+          ]
+        ),
+        GetPage(
+          name: '/register',
+          page: () => Register(),
+          middlewares: [
+            IsAuthenticatedMidleware()
+          ]
+        ),
+      ],
     );
   }
 }
