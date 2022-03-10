@@ -10,10 +10,8 @@ class IsAuthenticatedMidleware extends GetMiddleware {
   RouteSettings? redirect(String? route) {
     
     if(UserController.to.isAuthenticated()){
-      print('Redirecting to home');
       return RouteSettings(name: '/');
     }
-    print('Redirecting to anywher from intern');
     return null;
   }
 }

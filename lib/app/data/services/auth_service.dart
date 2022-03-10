@@ -2,6 +2,7 @@ import 'package:contack_and_note/app/data/enums/auth_enum.dart';
 import 'package:contack_and_note/app/data/models/user_model.dart';
 import 'package:contack_and_note/app/data/services/fireStore_user_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:get/get.dart';
 
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -30,10 +31,13 @@ class AuthService {
           errorMessage = "Your password is wrong.";
           break;
         case "user-not-found":
-          errorMessage = "he user with this email doesn't exist.";
+          errorMessage = "The user with this email doesn't exist.";
           break;
         case "user-disabled":
           errorMessage = "The user with this email has been disabled.";
+          break;
+        case "too-many-requests":
+          errorMessage = "Too many requests sended .";
           break;
         default:
           errorMessage = "An undefined Error happened, try it later.";
@@ -41,7 +45,6 @@ class AuthService {
     } catch (e) {
       errorMessage = "An undefined Error happened, try it later.";
     }
-
     return errorMessage;
   }
 
@@ -75,6 +78,8 @@ class AuthService {
   }
 
   Future logOut() async{
-    _auth.signOut();
+    _auth.signOut().then((_) {
+      Get.offAllNamed('/login');
+    });
   }
 }

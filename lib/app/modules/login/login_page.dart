@@ -128,7 +128,6 @@ class _LoginPageState extends State<Login> {
                                   ),
                                   onPressed: () async {
                                     if (_formKey.currentState!.validate()) {
-                                      print('valide');
                                       String email =
                                           this.emailEditingController.text;
                                       String password =
@@ -144,6 +143,7 @@ class _LoginPageState extends State<Login> {
                                           )
                                           .then(
                                             (value) => {
+                                              print('the value is ' + value),
                                               if (value.isNotEmpty)
                                                 {
                                                   Get.snackbar(

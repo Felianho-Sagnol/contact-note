@@ -4,12 +4,15 @@ class UserModel {
   final String phone ;
   final String imageUrle ;
   final String uid ;
+  final String? aboutMe ;
+
   UserModel({
     this.fullName = "",
     this.email = "",
     this.phone = "",
     this.uid = "",
     this.imageUrle ="",
+    this.aboutMe = "",
   });
 
   factory UserModel.fromMap(map) {
@@ -19,6 +22,7 @@ class UserModel {
       fullName: map['fullName'],
       phone: map['phone'],
       imageUrle: map['imageUrle'],
+      aboutMe : map['aboutMe']
     );
   }
 
@@ -29,6 +33,7 @@ class UserModel {
       'fullName': fullName,
       'phone': phone,
       'imageUrle' : imageUrle,
+      'aboutMe': aboutMe,
     };
   }
 }

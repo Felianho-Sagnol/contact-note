@@ -15,7 +15,6 @@ class UserController extends GetxController{
 
   setUser(UserModel user) {
     this.user(user);
-    print(this.user);
   }
 
   bool isAuthenticated() {

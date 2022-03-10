@@ -9,10 +9,8 @@ class IsNotAuthenticatedMidleware extends GetMiddleware {
   @override
   RouteSettings? redirect(String? route) {
     if(!UserController.to.isAuthenticated()){
-      print('Redirecting to login');
       return RouteSettings(name: '/login');
     }
-    print('Redirecting to anywhere from home');
     return null;
   }
 }
