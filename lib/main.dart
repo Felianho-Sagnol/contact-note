@@ -1,7 +1,9 @@
 import 'package:contack_and_note/app/modules/contact/add_contact_page.dart';
+import 'package:contack_and_note/app/modules/contact/contact_list_page.dart';
 import 'package:contack_and_note/app/modules/contact/contact_page.dart';
 import 'package:contack_and_note/app/modules/home/home_page.dart';
 import 'package:contack_and_note/app/modules/note/add_note_page.dart';
+import 'package:contack_and_note/app/modules/note/note_list_page.dart';
 import 'package:contack_and_note/app/modules/note/note_page.dart';
 import 'package:contack_and_note/app/modules/profile/profile_page.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -66,6 +68,13 @@ class MyApp extends StatelessWidget {
         ),
         GetPage(
           name: '/notes',
+          page: () => NoteList(),
+          middlewares: [
+            IsNotAuthenticatedMidleware(),
+          ],
+        ),
+        GetPage(
+          name: '/note',
           page: () => Note(),
           middlewares: [
             IsNotAuthenticatedMidleware(),
@@ -77,8 +86,16 @@ class MyApp extends StatelessWidget {
           middlewares: [
             IsNotAuthenticatedMidleware(),
           ],
-        ),GetPage(
+        ),
+        GetPage(
           name: '/contacts',
+          page: () => ContactList(),
+          middlewares: [
+            IsNotAuthenticatedMidleware(),
+          ],
+        ),
+        GetPage(
+          name: '/contact',
           page: () => Contact(),
           middlewares: [
             IsNotAuthenticatedMidleware(),

@@ -2,16 +2,16 @@ class UserModel {
   final String fullName;
   final String email;
   final String phone ;
-  final String imageUrle ;
+  final String imageUrl ;
   final String uid ;
-  final String? aboutMe ;
+  final String aboutMe ;
 
   UserModel({
     this.fullName = "",
     this.email = "",
     this.phone = "",
     this.uid = "",
-    this.imageUrle ="",
+    this.imageUrl ="",
     this.aboutMe = "",
   });
 
@@ -21,7 +21,7 @@ class UserModel {
       email: map['email'],
       fullName: map['fullName'],
       phone: map['phone'],
-      imageUrle: map['imageUrle'],
+      imageUrl: map['imageUrl'],
       aboutMe : map['aboutMe']
     );
   }
@@ -32,7 +32,7 @@ class UserModel {
       'email': email,
       'fullName': fullName,
       'phone': phone,
-      'imageUrle' : imageUrle,
+      'imageUrl' : imageUrl,
       'aboutMe': aboutMe,
     };
   }

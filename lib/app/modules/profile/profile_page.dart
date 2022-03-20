@@ -23,7 +23,8 @@ class _ProfileState extends State<Profile> {
       appBar: AppBar(
         title: Text(
           "My Informations",
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          style: TextStyle(
+              color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14),
         ),
         elevation: 0.5,
         iconTheme: IconThemeData(color: Colors.white),
@@ -87,26 +88,42 @@ class _ProfileState extends State<Profile> {
               padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
               child: Column(
                 children: [
-                  Container(
-                    padding: EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(100),
-                      border: Border.all(width: 5, color: Colors.white),
-                      color: Colors.white,
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black12,
-                          blurRadius: 20,
-                          offset: const Offset(5, 5),
-                        ),
-                      ],
-                    ),
-                    child: Icon(
-                      Icons.person,
-                      size: 80,
-                      color: Colors.grey.shade300,
-                    ),
-                  ),
+                  (UserController.to.user().imageUrl != '')
+                        ? CircleAvatar(
+                            radius: 100,
+                            backgroundColor: Colors.white,
+                            child: Container(
+                              //margin: EdgeInsets.only(bottom: 10),
+                              height: 150,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                image: DecorationImage(
+                                  fit: BoxFit.cover,
+                                  image: NetworkImage(
+                                          UserController.to.user().imageUrl)
+                                      as ImageProvider,
+                                ),
+                              ),
+                            ),
+                          )
+                        : CircleAvatar(
+                            radius: 100,
+                            backgroundColor: Colors.white,
+                            child: Container(
+                              //margin: EdgeInsets.only(bottom: 10),
+                              height: 150,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                image: DecorationImage(
+                                  fit: BoxFit.cover,
+                                  image: AssetImage(
+                                    'assets/images/profile1.png',
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                 
                   SizedBox(
                     height: 20,
                   ),
@@ -162,13 +179,14 @@ class _ProfileState extends State<Profile> {
                                         ListTile(
                                           leading: Icon(Icons.email),
                                           title: Text("Email"),
-                                          subtitle:
-                                              Text(UserController.to.user().email),
+                                          subtitle: Text(
+                                              UserController.to.user().email),
                                         ),
                                         ListTile(
                                           leading: Icon(Icons.phone),
                                           title: Text("Phone"),
-                                          subtitle: Text(UserController.to.user().phone),
+                                          subtitle: Text(
+                                              UserController.to.user().phone),
                                         ),
                                         ListTile(
                                           leading: Icon(Icons.person),

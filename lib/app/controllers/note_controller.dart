@@ -7,20 +7,12 @@ class NoteController extends GetxController {
   FirestoreNoteService firestoreNoteService = FirestoreNoteService();
   var notes = <NoteModel>[].obs;
 
+  var notesLength = 0.obs;
+
   NoteController(){
     setNotes();
   }
 
-
-  List<NoteModel> getFirstNotes(){
-    var firstNotes = <NoteModel>[];
-    for(var i = 0; i < notes.length; i++){
-      if(i==5) break;
-      firstNotes.add(notes[i]);
-    }
-
-    return firstNotes;
-  }
 
   Future<void> setNotes() async{
     await firestoreNoteService
@@ -28,5 +20,7 @@ class NoteController extends GetxController {
       notes.assignAll(values),
       notes.refresh()
     });
+
+    notesLength.value = notes.length;
   }
 }

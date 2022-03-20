@@ -6,22 +6,12 @@ class ContactController extends GetxController {
   static ContactController get to => Get.find();
   FirestoreContactService firestoreContactService = FirestoreContactService();
   var contacts = <ContactModel>[].obs;
+  var contactsLength = 0.obs;
+
 
   ContactController(){
     setContacts();
   }
-
-  List<ContactModel> getFirstContacts(){
-    var firstContacts = <ContactModel>[];
-    for(var i = 0; i < contacts.length; i++){
-      print(i);
-      if(i==5) break;
-      firstContacts.add(contacts[i]);
-    }
-
-    return firstContacts;
-  }
-
 
   Future<void> setContacts() async{
     await firestoreContactService
@@ -29,5 +19,6 @@ class ContactController extends GetxController {
       contacts.assignAll(values),
       contacts.refresh()
     });
+    contactsLength.value = contacts.length;
   }
 }

@@ -1,7 +1,10 @@
+import 'dart:io';
+
 import 'package:contack_and_note/app/core/themes/theme_helper.dart';
 import 'package:contack_and_note/app/core/utils/user_controller.dart';
 import 'package:contack_and_note/app/data/services/auth_service.dart';
 import 'package:contack_and_note/app/data/services/fireStore_user_service.dart';
+import 'package:contack_and_note/app/data/services/firestorage_service.dart';
 import 'package:contack_and_note/app/global_widgets/header_widget.dart';
 import 'package:contack_and_note/app/modules/profile/profile_page.dart';
 import 'package:flutter/cupertino.dart';
@@ -9,6 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:hexcolor/hexcolor.dart';
+import 'package:image_picker/image_picker.dart';
 
 class Register extends StatefulWidget {
   @override
@@ -28,6 +32,30 @@ class _RegisterState extends State<Register> {
   final emailEditingController = new TextEditingController();
   final passwordEditingController = new TextEditingController();
   final confirmPasswordEditingController = new TextEditingController();
+
+  File? _image;
+  FirestorageService _firestorageService = FirestorageService();
+  Future<void> _getImage(int type) async {
+    final picker = ImagePicker();
+
+    var image = await picker.pickImage(
+      source: type == 1 ? ImageSource.gallery : ImageSource.camera,
+    );
+
+    setState(() {
+      _image = File(image!.path);
+      debugPrint('$_image');
+    });
+  }
+
+  bool isLoading = false;
+
+  @override
+  initState() {
+    setState(() {
+      isLoading = false;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -55,13 +83,15 @@ class _RegisterState extends State<Register> {
                             child: Stack(
                               children: [
                                 Container(
-                                  padding: EdgeInsets.all(10),
-                                  width: 100.0,
-                                  height: 100.0,
+                                  //padding: EdgeInsets.all(10),
+                                  width: 120.0,
+                                  height: 120.0,
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(100),
-                                    border:
-                                        Border.all(width: 5, color: Colors.white),
+                                    border: Border.all(
+                                      width: 5,
+                                      color: Colors.white,
+                                    ),
                                     color: Colors.white,
                                     boxShadow: [
                                       BoxShadow(
@@ -71,13 +101,26 @@ class _RegisterState extends State<Register> {
                                       ),
                                     ],
                                   ),
-                                  child: (1 != 1)
-                                      ? Text('eee')
-                                      : Icon(
-                                          Icons.person,
-                                          color: Colors.grey.shade300,
-                                          size: 80.0,
+                                  child: CircleAvatar(
+                                    radius: 100,
+                                    backgroundColor: Colors.white,
+                                    child: Container(
+                                      //margin: EdgeInsets.only(bottom: 10),
+                                      height: 150,
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        image: DecorationImage(
+                                          fit: BoxFit.cover,
+                                          image: (_image != null)
+                                              ? FileImage(_image!)
+                                                  as ImageProvider
+                                              : AssetImage(
+                                                  'assets/images/profile1.png',
+                                                ),
                                         ),
+                                      ),
+                                    ),
+                                  ),
                                 ),
                               ],
                             ),
@@ -97,7 +140,8 @@ class _RegisterState extends State<Register> {
                                 return null;
                               },
                             ),
-                            decoration: ThemeHelper().inputBoxDecorationShaddow(),
+                            decoration:
+                                ThemeHelper().inputBoxDecorationShaddow(),
                           ),
                           SizedBox(height: 20.0),
                           Container(
@@ -115,7 +159,8 @@ class _RegisterState extends State<Register> {
                                 return null;
                               },
                             ),
-                            decoration: ThemeHelper().inputBoxDecorationShaddow(),
+                            decoration:
+                                ThemeHelper().inputBoxDecorationShaddow(),
                           ),
                           SizedBox(height: 20.0),
                           Container(
@@ -133,7 +178,8 @@ class _RegisterState extends State<Register> {
                                 return null;
                               },
                             ),
-                            decoration: ThemeHelper().inputBoxDecorationShaddow(),
+                            decoration:
+                                ThemeHelper().inputBoxDecorationShaddow(),
                           ),
                           SizedBox(height: 20.0),
                           Container(
@@ -149,7 +195,8 @@ class _RegisterState extends State<Register> {
                                 return null;
                               },
                             ),
-                            decoration: ThemeHelper().inputBoxDecorationShaddow(),
+                            decoration:
+                                ThemeHelper().inputBoxDecorationShaddow(),
                           ),
                           SizedBox(height: 20.0),
                           Container(
@@ -164,14 +211,16 @@ class _RegisterState extends State<Register> {
                                 } else if (confirmPasswordEditingController
                                             .text !=
                                         passwordEditingController.text &&
-                                    passwordEditingController.text.length >= 6) {
+                                    passwordEditingController.text.length >=
+                                        6) {
                                   return "Password don't match";
                                 }
-    
+
                                 return null;
                               },
                             ),
-                            decoration: ThemeHelper().inputBoxDecorationShaddow(),
+                            decoration:
+                                ThemeHelper().inputBoxDecorationShaddow(),
                           ),
                           SizedBox(height: 15.0),
                           FormField<bool>(
@@ -181,13 +230,14 @@ class _RegisterState extends State<Register> {
                                   Row(
                                     children: <Widget>[
                                       Checkbox(
-                                          value: checkboxValue,
-                                          onChanged: (value) {
-                                            setState(() {
-                                              checkboxValue = value!;
-                                              state.didChange(value);
-                                            });
-                                          }),
+                                        value: checkboxValue,
+                                        onChanged: (value) {
+                                          setState(() {
+                                            checkboxValue = value!;
+                                            state.didChange(value);
+                                          });
+                                        },
+                                      ),
                                       Text(
                                         "I accept all terms and conditions.",
                                         style: TextStyle(color: Colors.grey),
@@ -216,33 +266,82 @@ class _RegisterState extends State<Register> {
                               }
                             },
                           ),
-                          SizedBox(height: 15.0),
+                          SizedBox(height: 10.0),
                           Container(
-                            margin: EdgeInsets.fromLTRB(10, 0, 10, 20),
-                            //alignment: Alignment.topRight,
-                            child: GestureDetector(
-                              onTap: () {
-                                print('adding picture');
-                              },
-                              child: Text(
-                                "Add profile picture here",
-                                style: TextStyle(
-                                  color: HexColor("#018786"),
-                                  fontWeight: FontWeight.bold,
-                                ),
+                            margin: EdgeInsets.fromLTRB(10, 0, 10, 10),
+                            child: Text(
+                              "Add profile from",
+                              style: TextStyle(
+                                color: HexColor("#018786"),
+                                fontWeight: FontWeight.bold,
                               ),
                             ),
                           ),
-                          CircleAvatar(
-                            radius: 20.0,
-                            backgroundColor: Colors.white,
-                            child: IconButton(
-                              onPressed: () {},
-                              icon: Icon(Icons.camera_alt),
-                              color: HexColor("#018786"),
+                          Container(
+                            margin: EdgeInsets.fromLTRB(10, 0, 10, 10),
+                            child: GestureDetector(
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Column(
+                                    children: [
+                                      CircleAvatar(
+                                        radius: 20.0,
+                                        backgroundColor: Colors.white,
+                                        child: IconButton(
+                                          onPressed: () async {
+                                            await _getImage(0);
+                                          },
+                                          icon: Icon(
+                                            Icons.camera_alt,
+                                            size: 20.0,
+                                          ),
+                                          color: HexColor("#018786"),
+                                        ),
+                                      ),
+                                      Text(
+                                        'camera',
+                                        style: TextStyle(
+                                          color: HexColor("#018786"),
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 11,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(width: 10),
+                                  Column(
+                                    children: [
+                                      CircleAvatar(
+                                        radius: 20.0,
+                                        backgroundColor: Colors.white,
+                                        child: IconButton(
+                                          onPressed: () async {
+                                            await _getImage(1);
+                                          },
+                                          icon: Icon(
+                                            Icons.collections,
+                                            size: 20.0,
+                                          ),
+                                          color: HexColor("#018786"),
+                                        ),
+                                      ),
+                                      Text(
+                                        'galery',
+                                        style: TextStyle(
+                                          color: HexColor("#018786"),
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 11,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
-                          SizedBox(height: 20.0),
+                          SizedBox(height: 10.0),
                           Container(
                             decoration:
                                 ThemeHelper().buttonBoxDecoration(context),
@@ -254,7 +353,7 @@ class _RegisterState extends State<Register> {
                                 child: Text(
                                   "Register".toUpperCase(),
                                   style: TextStyle(
-                                    fontSize: 20,
+                                    fontSize: 18,
                                     fontWeight: FontWeight.bold,
                                     color: Colors.white,
                                   ),
@@ -262,30 +361,40 @@ class _RegisterState extends State<Register> {
                               ),
                               onPressed: () async {
                                 if (_formKey.currentState!.validate()) {
+                                  setState(() {
+                                    isLoading = true;
+                                  });
                                   String fullName =
                                       this.fullNameEditingController.text;
-                                  String email = this.emailEditingController.text;
-                                  String phone = this.phoneEditingController.text;
+                                  String email =
+                                      this.emailEditingController.text;
+                                  String phone =
+                                      this.phoneEditingController.text;
                                   String password =
                                       this.passwordEditingController.text;
-    
+
                                   AuthService authService = AuthService();
                                   FirestoreUserService firestoreUserService =
                                       FirestoreUserService();
-                                  print(email + " " + password);
+                                  String imageUrl = "";
+
                                   await authService
                                       .register(
                                         email: email,
                                         password: password,
                                       )
                                       .then(
-                                        (value) => {
+                                        (value) async => {
                                           if (value.length != 0)
                                             {
+                                              setState(() {
+                                                isLoading = false;
+                                              }),
                                               Get.snackbar(
                                                 "Registration Error !!",
                                                 value,
-                                                snackPosition: SnackPosition.TOP,
+                                                snackPosition:
+                                                    SnackPosition.TOP,
                                                 backgroundColor: Colors.red,
                                                 duration: Duration(seconds: 5),
                                                 isDismissible: true,
@@ -296,11 +405,21 @@ class _RegisterState extends State<Register> {
                                             }
                                           else
                                             {
+                                              if (_image != null)
+                                                {
+                                                  imageUrl =
+                                                      await _firestorageService
+                                                          .uploadImageToStorge(
+                                                    _image!,
+                                                  ),
+                                                },
                                               firestoreUserService
                                                   .addUserToFireBase(
-                                                      email: email,
-                                                      fullName: fullName,
-                                                      phone: phone)
+                                                    email: email,
+                                                    fullName: fullName,
+                                                    phone: phone,
+                                                    imageUrl: imageUrl,
+                                                  )
                                                   .then(
                                                     (_) => {
                                                       UserController.to
@@ -320,7 +439,9 @@ class _RegisterState extends State<Register> {
                               },
                             ),
                           ),
-                          SizedBox(height: 30.0),
+                          SizedBox(height: 15.0),
+                          (isLoading) ? CircularProgressIndicator() : Text(''),
+                          SizedBox(height: 10.0),
                           TextButton(
                               onPressed: () {
                                 Get.offNamed('/login');

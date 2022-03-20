@@ -15,46 +15,46 @@ class MenuDrawer extends StatelessWidget {
               padding: EdgeInsets.zero,
               children: <Widget>[
                 Container(
-                  height:250,
+                  height: 250,
                   child: DrawerHeader(
-                      child: Container(
-                        width: double.infinity,
-                        //height: 100,
-                        padding: EdgeInsets.only(top: 20.0),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Container(
-                              margin: EdgeInsets.only(bottom: 10),
-                              height: 80,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                image: DecorationImage(
-                                  image: AssetImage('assets/images/profile1.png'),
-                                ),
+                    child: Container(
+                      width: double.infinity,
+                      //height: 100,
+                      padding: EdgeInsets.only(top: 20.0),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Container(
+                            margin: EdgeInsets.only(bottom: 10),
+                            height: 80,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              image: DecorationImage(
+                                image: AssetImage('assets/images/profile1.png'),
                               ),
                             ),
-                            Obx(
-                              () => Text(
-                                UserController.to.user().fullName,
-                                style:
-                                    TextStyle(color: Colors.black, fontSize: 20),
-                              ),
+                          ),
+                          Obx(
+                            () => Text(
+                              UserController.to.user().fullName,
+                              style:
+                                  TextStyle(color: Colors.black, fontSize: 20),
                             ),
-                            SizedBox(height: 5),
-                            Obx(
-                              () => Text(
-                                UserController.to.user().email,
-                                style:
-                                    TextStyle(color: Colors.black, fontSize: 13),
-                              ),
+                          ),
+                          SizedBox(height: 5),
+                          Obx(
+                            () => Text(
+                              UserController.to.user().email,
+                              style:
+                                  TextStyle(color: Colors.black, fontSize: 13),
                             ),
-                            SizedBox(height: 20)
-                          ],
-                        ),
+                          ),
+                          SizedBox(height: 20)
+                        ],
                       ),
                     ),
                   ),
+                ),
                 ListTile(
                   leading: Icon(Icons.home),
                   title: Text('Home'),
@@ -79,7 +79,9 @@ class MenuDrawer extends StatelessWidget {
                 ),
                 ListTile(
                   leading: Icon(Icons.border_color),
-                  title: Text('My Notes ('+NoteController.to.notes.length.toString()+')'),
+                  title: Text('My Notes (' +
+                      NoteController.to.notesLength.value.toString() +
+                      ')'),
                   onTap: () => {
                     //Navigator.of(context).pop(),
                     Get.offNamed('/notes')
@@ -87,9 +89,14 @@ class MenuDrawer extends StatelessWidget {
                 ),
                 ListTile(
                   leading: Icon(Icons.contact_page),
-                  title: Text('My Contacts ('+ContactController.to.contacts.length.toString()+')'),
+                  title: Text(
+                    'My Contacts (' +
+                        ContactController.to.contactsLength.value.toString() +
+                        ')',
+                  ),
                   onTap: () => {
-                    Navigator.of(context).pop(), Get.offAllNamed('/contacts')
+                    Navigator.of(context).pop(),
+                    Get.offAllNamed('/contacts')
                   },
                 ),
                 ListTile(
@@ -99,31 +106,32 @@ class MenuDrawer extends StatelessWidget {
                     //await this._auth.logOut(),
                     Navigator.of(context).pop(),
                     Get.defaultDialog(
-                        title: "Log out",
-                        content: Text("Are you sur to logout ?"),
-                        barrierDismissible: false,
-                        radius: 50.0,
-                        confirm: ElevatedButton(
-                          child: Text("YES"),
-                          onPressed: () async {
-                            Get.back();
-                            await this._auth.logOut();
-                          },
-                        ),
-                        cancel: ElevatedButton(
-                          child: Text("No"),
-                          onPressed: () {
-                            Get.back();
-                            //Navigator.of(context).pop();
-                          },
-                        ))
+                      title: "Log out",
+                      content: Text("Are you sur to logout ?"),
+                      barrierDismissible: false,
+                      confirm: ElevatedButton(
+                        child: Text("YES"),
+                        onPressed: () async {
+                          Get.back();
+                          await this._auth.logOut();
+                        },
+                      ),
+                      cancel: ElevatedButton(
+                        child: Text("No"),
+                        onPressed: () {
+                          Get.back();
+                          //Navigator.of(context).pop();
+                        },
+                      ),
+                    )
                   },
                 ),
                 ListTile(
                   leading: Icon(Icons.help_center),
                   title: Text("About the application"),
                   onTap: () => {
-                    Navigator.of(context).pop(), Get.offAllNamed('/contacts')
+                    Navigator.of(context).pop(),
+                    Get.offAllNamed('/contacts')
                   },
                 ),
               ],

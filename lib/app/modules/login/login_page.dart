@@ -45,11 +45,11 @@ class _LoginPageState extends State<Login> {
                       Text(
                         'Hello',
                         style: TextStyle(
-                            fontSize: 60, fontWeight: FontWeight.bold),
+                            fontSize: 50, fontWeight: FontWeight.bold,),
                       ),
                       Text(
                         'Signin into your account',
-                        style: TextStyle(color: Colors.grey),
+                        style: TextStyle(color: Colors.grey,),
                       ),
                       SizedBox(height: 30.0),
                       Form(

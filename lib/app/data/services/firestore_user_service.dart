@@ -12,7 +12,7 @@ class FirestoreUserService {
     required String email,
     required String fullName,
     required String phone,
-    String imageUrle = "",
+    required String imageUrl,
   }) async {
     User? user = _auth.currentUser;
 
@@ -22,7 +22,7 @@ class FirestoreUserService {
         email: email,
         phone: phone,
         uid: user.uid,
-        imageUrle: imageUrle,
+        imageUrl: imageUrl,
       );
 
       await this

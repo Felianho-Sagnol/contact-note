@@ -28,12 +28,24 @@ class AddNote extends StatelessWidget {
         contentControler.text = note!.content.toString();
       }
     }
-    var addText = addNewNote? "Add a new note" : "Update the note";
+    var addText = addNewNote ? "Add a new note" : "Update the note";
     return SafeArea(
       child: Scaffold(
         drawer: MenuDrawer(),
         appBar: AppBar(
-          title: addNewNote? Text("Add new note") : Text("Update the note"),
+          title: addNewNote
+              ? Text(
+                  "Nnew note",
+                  style: TextStyle(
+                    fontSize: 14,
+                  ),
+                )
+              : Text(
+                  "Update the note",
+                  style: TextStyle(
+                    fontSize: 14,
+                  ),
+                ),
           elevation: 0.5,
         ),
         floatingActionButton: FloatingActionButton(
@@ -43,20 +55,21 @@ class AddNote extends StatelessWidget {
               var now = DateTime.now();
               var formatter = DateFormat('yyyy-MM-dd');
               String formattedDate = formatter.format(now);
-              if(addNewNote){
+              if (addNewNote) {
                 NoteModel newNote = NoteModel(
-                  userUid: UserController.to.user().uid,
-                  title: titleControler.text,
-                  content: contentControler.text,
-                  createdAt: formattedDate,
-                  updatedAt: formattedDate);
-                  await noteService.add(newNote);
-              }else{
+                    userUid: UserController.to.user().uid,
+                    title: titleControler.text,
+                    content: contentControler.text,
+                    createdAt: formattedDate,
+                    updatedAt: formattedDate);
+                await noteService.add(newNote);
+              } else {
                 var title = note!.title;
-                if(note != null){
-                  note?.update(titleControler.text,contentControler.text,formattedDate);
+                if (note != null) {
+                  note?.update(titleControler.text, contentControler.text,
+                      formattedDate);
                 }
-                await noteService.update(title,note!);
+                await noteService.update(title, note!);
               }
             }
           },

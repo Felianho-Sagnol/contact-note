@@ -23,6 +23,7 @@ class AuthService {
             },
           );
     } on FirebaseAuthException catch (e) {
+      print(e.code);
       switch (e.code) {
         case "invalid-email":
           errorMessage = "Your email address appears to be malformed.";
@@ -56,7 +57,9 @@ class AuthService {
           .createUserWithEmailAndPassword(email: email, password: password);
       errorMessage = "";
     } on FirebaseAuthException catch (e) {
+      print(e.code);
       switch (e.code) {
+        
         case "invalid-email":
           errorMessage = "Your email address appears to be malformed.";
           break;

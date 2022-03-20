@@ -1,18 +1,28 @@
+import 'dart:io';
+
 import 'package:contack_and_note/app/core/themes/theme_helper.dart';
 import 'package:contack_and_note/app/core/utils/user_controller.dart';
 import 'package:contack_and_note/app/data/models/contact_model.dart';
 import 'package:contack_and_note/app/data/models/note_model.dart';
 import 'package:contack_and_note/app/data/models/note_model.dart';
+import 'package:contack_and_note/app/data/services/firestorage_service.dart';
 import 'package:contack_and_note/app/data/services/firestore_contact_service.dart';
 import 'package:contack_and_note/app/data/services/firestore_note_service.dart';
 import 'package:contack_and_note/app/global_widgets/drawer_menu.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:hexcolor/hexcolor.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 
-class AddContact extends StatelessWidget {
-  AddContact({Key? key}) : super(key: key);
+class AddContact extends StatefulWidget {
+  const AddContact({Key? key}) : super(key: key);
 
+  @override
+  _AddContactState createState() => _AddContactState();
+}
+
+class _AddContactState extends State<AddContact> {
   bool addNewContact = true;
   ContactModel? contact;
 
@@ -21,6 +31,30 @@ class AddContact extends StatelessWidget {
   final TextEditingController emailControler = new TextEditingController();
   final TextEditingController phoneControler = new TextEditingController();
   final TextEditingController commentControler = new TextEditingController();
+
+  File? _image;
+  FirestorageService _firestorageService = FirestorageService();
+  Future<void> _getImage(int type) async {
+    final picker = ImagePicker();
+
+    var image = await picker.pickImage(
+      source: type == 1 ? ImageSource.gallery : ImageSource.camera,
+    );
+
+    setState(() {
+      _image = File(image!.path);
+      debugPrint('$_image');
+    });
+  }
+
+  bool isLoading = false;
+
+  @override
+  initState() {
+    setState(() {
+      isLoading = false;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -34,22 +68,42 @@ class AddContact extends StatelessWidget {
         commentControler.text = contact!.comment.toString();
       }
     }
-    var addText = addNewContact? "Add a new contact" : "Update the contact";
+    var addText = addNewContact ? "Add a new contact" : "Update the contact";
     return SafeArea(
       child: Scaffold(
         drawer: MenuDrawer(),
         appBar: AppBar(
-          title: addNewContact? Text("Add new contact") : Text("Update the contact"),
+          title: addNewContact
+              ? Text(
+                  "New contact",
+                  style: TextStyle(
+                    fontSize: 14,
+                  ),
+                )
+              : Text(
+                  "Update the contact",
+                  style: TextStyle(
+                    fontSize: 14,
+                  ),
+                ),
           elevation: 0.5,
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: () async {
             if (_formKey.currentState!.validate()) {
-              FirestoreContactService contactService = FirestoreContactService();
+              setState(() {
+                isLoading = true;
+              });
+              FirestoreContactService contactService =
+                  FirestoreContactService();
               var now = DateTime.now();
               var formatter = DateFormat('yyyy-MM-dd');
               String formattedDate = formatter.format(now);
-              if(addNewContact){
+              String imageUrl = "";
+              if (addNewContact) {
+                imageUrl = await _firestorageService.uploadContactImageToStorge(
+                  _image!,
+                );
                 ContactModel newContact = ContactModel(
                   userUid: UserController.to.user().uid,
                   fullName: fullNameControler.text,
@@ -57,21 +111,28 @@ class AddContact extends StatelessWidget {
                   phone: phoneControler.text,
                   comment: commentControler.text,
                   createdAt: formattedDate,
-                  updatedAt: formattedDate);
-                  print(newContact);
-                  await contactService.add(newContact);
-              }else{
+                  updatedAt: formattedDate,
+                  imageUrl: imageUrl,
+                );
+                print(newContact);
+                await contactService.add(newContact);
+                setState(() {
+                  isLoading = false;
+                });
+                Get.offAllNamed(
+                  '/contacts',
+                );
+              } else {
                 var fullName = contact!.fullName;
-                if(contact != null){
+                if (contact != null) {
                   contact?.update(
-                    emailControler.text,
-                    phoneControler.text,
-                    fullNameControler.text,
-                    commentControler.text,
-                    formattedDate
-                  );
+                      emailControler.text,
+                      phoneControler.text,
+                      fullNameControler.text,
+                      commentControler.text,
+                      formattedDate);
                 }
-                await contactService.update(fullName,contact!);
+                await contactService.update(fullName, contact!);
               }
             }
           },
@@ -91,7 +152,101 @@ class AddContact extends StatelessWidget {
                     fontSize: 20,
                   ),
                 ),
-                SizedBox(height: 35),
+                SizedBox(height: 20),
+                Container(
+                  margin: EdgeInsets.only(bottom: 10),
+                  padding : EdgeInsets.only(right:40,left:40),
+                  height: 120,
+                  decoration: BoxDecoration(
+                    //shape: BoxShape.circle,
+                    image: DecorationImage(
+                      fit: BoxFit.none,
+                      scale: 5.0,
+                      image: (_image != null)
+                          ? FileImage(_image!) as ImageProvider
+                          : AssetImage(
+                              'assets/images/profile1.png',
+                            ),
+                    ),
+                  ),
+                ),
+                Container(
+                  margin: EdgeInsets.fromLTRB(10, 0, 10, 10),
+                  child: Text(
+                    "Choose picture from",
+                    style: TextStyle(
+                      color: HexColor("#018786"),
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+                Container(
+                  margin: EdgeInsets.fromLTRB(10, 0, 10, 10),
+                  child: GestureDetector(
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Column(
+                          children: [
+                            CircleAvatar(
+                              radius: 20.0,
+                              backgroundColor: Colors.white,
+                              child: IconButton(
+                                onPressed: () async {
+                                  await _getImage(0);
+                                },
+                                icon: Icon(
+                                  Icons.camera_alt,
+                                  size: 20.0,
+                                ),
+                                color: HexColor("#018786"),
+                              ),
+                            ),
+                            Text(
+                              'camera',
+                              style: TextStyle(
+                                color: HexColor("#018786"),
+                                fontWeight: FontWeight.bold,
+                                fontSize: 11,
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(width: 10),
+                        Column(
+                          children: [
+                            CircleAvatar(
+                              radius: 20.0,
+                              backgroundColor: Colors.white,
+                              child: IconButton(
+                                onPressed: () async {
+                                  await _getImage(1);
+                                },
+                                icon: Icon(
+                                  Icons.collections,
+                                  size: 20.0,
+                                ),
+                                color: HexColor("#018786"),
+                              ),
+                            ),
+                            Text(
+                              'galery',
+                              style: TextStyle(
+                                color: HexColor("#018786"),
+                                fontWeight: FontWeight.bold,
+                                fontSize: 11,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                SizedBox(height: 10),
+                (isLoading) ? CircularProgressIndicator() : Text(''),
+                SizedBox(height: 10),
                 Form(
                   key: _formKey,
                   child: Column(
@@ -123,7 +278,7 @@ class AddContact extends StatelessWidget {
                           ),
                           validator: (val) {
                             if (!RegExp(r"^(\+[0-9]{1,5})?[0-9]{8,}$")
-                                        .hasMatch(val!)) {
+                                .hasMatch(val!)) {
                               return "Enter the phone number";
                             }
                             return null;
@@ -140,8 +295,9 @@ class AddContact extends StatelessWidget {
                             'Enter the email if you have',
                           ),
                           validator: (val) {
-                            if (!val!.isEmpty && !RegExp(r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?)*$")
-                                            .hasMatch(val)) {
+                            if (!val!.isEmpty &&
+                                !RegExp(r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?)*$")
+                                    .hasMatch(val)) {
                               return "Enter valid email address or let it empty";
                             }
                             return null;

@@ -7,7 +7,7 @@ class ContactModel {
    String fullName;
    String? email;
    String phone ;
-   String? imageUrle ;
+   String? imageUrl ;
 
   ContactModel({
     this.id = "",
@@ -18,7 +18,7 @@ class ContactModel {
     this.email="",
     this.phone="",
     this.fullName="",
-    this.imageUrle=''
+    this.imageUrl=''
   });
 
   factory ContactModel.fromMap(map) {
@@ -27,7 +27,7 @@ class ContactModel {
       fullName: map['fullName'],
       email: map['email'],
       phone: map['phone'],
-      imageUrle: map['imageUrle'],
+      imageUrl: map['imageUrl'],
       comment: map['comment'],
       userUid: map['userUid'],
       createdAt: map['createdAt'],
@@ -52,7 +52,7 @@ class ContactModel {
       'fullName' : fullName,
       'userUid' : userUid,
       'email' : email,
-      'imageUrle' : imageUrle,
+      'imageUrl' : imageUrl,
       'createdAt': createdAt,
       'updatedAt' : updatedAt,
     };
